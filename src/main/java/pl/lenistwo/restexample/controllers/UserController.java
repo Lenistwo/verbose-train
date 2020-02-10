@@ -39,19 +39,19 @@ public class UserController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/all-with-limit")
+    @GetMapping(value = "/all-with-limit", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<User> getAllWithLimit(@RequestParam int limit) {
         return repository.findAll(PageRequest.of(0, limit));
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/all-with-skip")
+    @GetMapping(value = "/all-with-skip", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<User> getAllWithSkipAndLimit(@RequestParam int skip, @RequestParam int limit) {
-        return repository.findAll(new OffsetPageRequest(limit, skip));
+        return repository.findAll(new OffsetPageRequest(skip, limit));
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @DeleteMapping("/delete-user")
+    @DeleteMapping(value = "/delete-user")
     public void deleteUserWithId(@RequestParam long id) {
         Optional<User> user = repository.findById(id);
         repository.delete(user.orElseThrow(() -> new UserNotFoundException("User with " + id + "doesnt exist")));

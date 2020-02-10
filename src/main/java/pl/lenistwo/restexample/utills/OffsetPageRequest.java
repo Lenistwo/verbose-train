@@ -15,7 +15,7 @@ public class OffsetPageRequest implements Serializable, Pageable {
     private int offset;
     private Sort sort;
 
-    public OffsetPageRequest(int limit, int offset) {
+    public OffsetPageRequest(int offset, int limit) {
         if (offset < 0)
             throw new OffsetCannotBeLessThanZeroException("Offset cannot be less than zero!");
         if (limit < 1)
