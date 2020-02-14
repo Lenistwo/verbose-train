@@ -16,15 +16,15 @@ public class User {
     private long id;
 
     @Column
-    @NotEmpty(message = "name must not be empty")
+    @NotEmpty(message = "name cannot be empty")
     private String name;
 
     @Column
-    @NotEmpty(message = "surname must not be empty")
+    @NotEmpty(message = "surname cannot be empty")
     private String surname;
 
     @Column
-    @NotEmpty(message = "email must not be empty")
+    @NotEmpty(message = "email cannot be empty")
     private String email;
 
     public User() {
