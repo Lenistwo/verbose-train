@@ -4,23 +4,27 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 
 @Entity
 @Table
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @Column
+    @NotEmpty(message = "name must not be empty")
     private String name;
 
     @Column
+    @NotEmpty(message = "surname must not be empty")
     private String surname;
 
     @Column
+    @NotEmpty(message = "email must not be empty")
     private String email;
 
     public User() {

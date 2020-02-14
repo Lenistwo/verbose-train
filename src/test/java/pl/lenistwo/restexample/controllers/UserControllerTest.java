@@ -16,6 +16,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.lenistwo.restexample.RestExampleApplication;
 import pl.lenistwo.restexample.entities.User;
+import pl.lenistwo.restexample.exceptions.LimitCannotBeLessThanOneException;
+import pl.lenistwo.restexample.exceptions.OffsetCannotBeLessThanZeroException;
 import pl.lenistwo.restexample.repositories.UserRepository;
 import pl.lenistwo.restexample.utills.OffsetPageRequest;
 
@@ -24,6 +26,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -73,6 +76,12 @@ class UserControllerTest {
     }
 
     @Test
+    void shouldHandleUserIdOutOfBound() throws Exception {
+        var id = 123;
+        mvc.perform(get("/user-api/user?id=" + id)).andExpect(status().isOk()).andExpect(content().string("User with ".concat(String.valueOf(id)).concat(" doesnt exist")));
+    }
+
+    @Test
     void getAllWithLimit() throws Exception {
         int limit = 2;
         List<User> limitedList = users.subList(0, 2);
@@ -91,13 +100,27 @@ class UserControllerTest {
     }
 
     @Test
+    void shouldThrowOffsetCannotBeLessThanZeroException() {
+        assertThrows(OffsetCannotBeLessThanZeroException.class, () ->
+                new OffsetPageRequest(-1, 1)
+        );
+    }
+
+    @Test
+    void shouldThrowLimitCannotBeLessThanOneException() {
+        assertThrows(LimitCannotBeLessThanOneException.class, () ->
+                new OffsetPageRequest(0, 0)
+        );
+    }
+
+    @Test
     void deleteUserWithId() throws Exception {
         mvc.perform(delete("/user-api/delete-user?id=".concat(String.valueOf(1)))).andExpect(status().isOk());
     }
 
     @Test
     void createUser() throws Exception {
-        User user = new User("Adam","Wie","Jak");
+        User user = new User("Adam", "Wie", "Jak");
         mvc.perform(post("/user-api/create-user").contentType(MediaType.APPLICATION_JSON_VALUE).content(gson.toJson(user))).andExpect(status().isCreated());
     }
 }
