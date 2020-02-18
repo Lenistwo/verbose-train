@@ -65,20 +65,20 @@ class UserControllerTest {
     @Test
     void should_return_all_users() throws Exception {
         given(repository.findAll()).willReturn(users);
-        mvc.perform(get("/user-api/all-users")).andExpect(status().isOk()).andExpect(content().json(gson.toJson(users)));
+        mvc.perform(get("/user-api/users")).andExpect(status().isOk()).andExpect(content().json(gson.toJson(users)));
     }
 
     @Test
     void getUserById() throws Exception {
         Optional<User> user = Optional.of(users.get(1));
         given(repository.findById(1L)).willReturn(user);
-        mvc.perform(get("/user-api/user?id=" + 1)).andExpect(status().isOk()).andExpect(content().json(gson.toJson(users.get(1))));
+        mvc.perform(get("/user-api/users/" + 1)).andExpect(status().isOk()).andExpect(content().json(gson.toJson(users.get(1))));
     }
 
     @Test
     void shouldHandleUserIdOutOfBound() throws Exception {
         var id = 123;
-        mvc.perform(get("/user-api/user?id=" + id)).andExpect(status().isOk()).andExpect(content().string("User with ".concat(String.valueOf(id)).concat(" doesnt exist")));
+        mvc.perform(get("/user-api/users/" + id)).andExpect(status().isOk()).andExpect(content().string("User with ".concat(String.valueOf(id)).concat(" doesnt exist")));
     }
 
     @Test
@@ -86,7 +86,7 @@ class UserControllerTest {
         int limit = 2;
         List<User> limitedList = users.subList(0, 2);
         given(repository.findAll(PageRequest.of(0, limit))).willReturn(limitedList);
-        mvc.perform(get("/user-api/all-with-limit?limit=".concat(String.valueOf(limit)))).andExpect(status().isOk()).andExpect(content().json(gson.toJson(limitedList)));
+        mvc.perform(get("/user-api/users-with-limit?limit=".concat(String.valueOf(limit)))).andExpect(status().isOk()).andExpect(content().json(gson.toJson(limitedList)));
     }
 
     @Test
@@ -95,7 +95,7 @@ class UserControllerTest {
         int limit = users.size();
         List<User> skippedAndLimitedList = users.subList(skip, limit);
         given(repository.findAll(new OffsetPageRequest(skip, limit))).willReturn(skippedAndLimitedList);
-        mvc.perform(get("/user-api/all-with-skip?skip=".concat(String.valueOf(skip)).concat("&limit=" + limit)))
+        mvc.perform(get("/user-api/users-with-skip?skip=".concat(String.valueOf(skip)).concat("&limit=" + limit)))
                 .andExpect(status().isOk()).andExpect(content().json(gson.toJson(skippedAndLimitedList)));
     }
 

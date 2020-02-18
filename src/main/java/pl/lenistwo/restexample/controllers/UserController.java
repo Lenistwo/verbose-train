@@ -11,7 +11,7 @@ import pl.lenistwo.restexample.repositories.UserRepository;
 import pl.lenistwo.restexample.utills.OffsetPageRequest;
 
 import javax.validation.Valid;
-import java.util.List;
+import java.util.Collection;
 import java.util.Optional;
 
 @RestController
@@ -26,27 +26,27 @@ public class UserController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping(value = "/all-users", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<User> getAllUsers() {
+    @GetMapping(value = "/users", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Collection<User> getAllUsers() {
         return repository.findAll();
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping(value = "/user", produces = MediaType.APPLICATION_JSON_VALUE)
-    public User getUserById(@RequestParam Long id) {
+    @GetMapping(value = "/users/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public User getUserById(@PathVariable Long id) {
         Optional<User> user = repository.findById(id);
         return user.orElseThrow(() -> new UserNotFoundException("User with " + id + " doesnt exist"));
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping(value = "/all-with-limit", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<User> getAllWithLimit(@RequestParam int limit) {
+    @GetMapping(value = "/users-with-limit", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Collection<User> getAllWithLimit(@RequestParam(defaultValue = "0") int limit) {
         return repository.findAll(PageRequest.of(0, limit));
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping(value = "/all-with-skip", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<User> getAllWithSkipAndLimit(@RequestParam int skip, @RequestParam int limit) {
+    @GetMapping(value = "/users-with-skip", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Collection<User> getAllWithSkipAndLimit(@RequestParam int skip, @RequestParam int limit) {
         return repository.findAll(new OffsetPageRequest(skip, limit));
     }
 
